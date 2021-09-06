@@ -1,7 +1,7 @@
 #This Dockerfile creates a build for all architectures
 
 #Image that copies in the files and passes them to the main image
-FROM ubuntu:focal AS copytask
+FROM ubuntu:focal-20210827 AS copytask
 
 ARG TARGETPLATFORM
 

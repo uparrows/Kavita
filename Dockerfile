@@ -13,7 +13,7 @@ COPY copy_runtime.sh /copy_runtime.sh
 RUN /copy_runtime.sh
 
 #Production image
-FROM ubuntu:focal
+FROM ubuntu:latest
 
 COPY --from=copytask /Kavita /kavita
 COPY --from=copytask /files/wwwroot /kavita/wwwroot

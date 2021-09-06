@@ -82,7 +82,7 @@ jobs:
 
       - name: Sonar Scan
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          GITHUB_TOKEN: ${{ secrets.HUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
@@ -130,7 +130,7 @@ jobs:
         uses: jwalton/gh-find-current-pr@v1.0.2
         id: findPr
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.HUB_TOKEN }}
 
       - name: Parse PR body
         id: parse-body
@@ -212,14 +212,6 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
-      - name: Notify Discord
-        uses: rjstone/discord-webhook-notify@v1
-        with:
-            severity: info
-            description: v${{steps.get-version.outputs.assembly-version}} - ${{ steps.findPr.outputs.title }}
-            details: '${{ steps.parse-body.outputs.BODY }}'
-            text: A new nightly build has been released for docker.
-            webhookUrl: ${{ secrets.DISCORD_DOCKER_UPDATE_URL }}
 
   stable:
     name: Build Stable Docker if Main push
@@ -232,7 +224,7 @@ jobs:
         uses: jwalton/gh-find-current-pr@v1.0.2
         id: findPr
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.HUB_TOKEN }}
 
       - name: Parse PR body
         id: parse-body
@@ -323,10 +315,3 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
-      - name: Notify Discord
-        uses: rjstone/discord-webhook-notify@v1
-        with:
-            severity: info
-            description: v${{steps.get-version.outputs.assembly-version}} - ${{ steps.findPr.outputs.title }}
-            details: '${{ steps.parse-body.outputs.BODY }}'
-            text: A new stable build has been released.

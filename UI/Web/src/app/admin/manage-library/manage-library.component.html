@@ -1,0 +1,33 @@
+<div class="container-fluid">
+    <div class="row mb-2">
+        <div class="col-8"><h3>书库</h3></div>
+        <div class="col-4"><button class="btn btn-primary float-right" (click)="addLibrary()"><i class="fa fa-plus" aria-hidden="true"></i><span class="phone-hidden">&nbsp;添加书库</span></button></div>
+    </div>
+    <ul class="list-group" *ngIf="!createLibraryToggle; else createLibrary">
+        <li *ngFor="let library of libraries; let idx = index;" class="list-group-item">
+            <div>
+                <h4>
+                    <span id="library-name--{{idx}}">{{library.name | titlecase}}</span>
+                    <div class="float-right">
+                        <button class="btn btn-secondary mr-2 btn-sm" (click)="scanLibrary(library)" placement="top" ngbTooltip="扫描书库" attr.aria-label="扫描书库"><i class="fa fa-sync-alt" title="扫描"></i></button>
+                        <button class="btn btn-danger mr-2 btn-sm" [disabled]="deletionInProgress" (click)="deleteLibrary(library)"><i class="fa fa-trash" placement="top" ngbTooltip="删除书库" attr.aria-label="删除 {{library.name | titlecase}}"></i></button>
+                        <button class="btn btn-primary btn-sm" (click)="editLibrary(library)"><i class="fa fa-pen" placement="top" ngbTooltip="编辑" attr.aria-label="编辑 {{library.name | titlecase}}"></i></button>
+                    </div>
+                </h4>
+            </div>
+            <div>类型: {{libraryType(library.type)}}</div>
+            <div>共享文件夹: {{library.folders.length + ' folders'}}</div>
+        </li>
+        <li *ngIf="loading" class="list-group-item">
+            <div class="spinner-border text-secondary" role="status">
+                <span class="invisible">加载中...</span>
+            </div>
+        </li>
+        <li class="list-group-item" *ngIf="libraries.length === 0 && !loading">
+            没有图书库，尝试创建一个。
+        </li>
+    </ul>
+    <ng-template #createLibrary>
+        <app-library-editor-modal></app-library-editor-modal>
+    </ng-template>
+</div>

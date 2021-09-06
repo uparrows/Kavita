@@ -1,0 +1,23 @@
+
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">编辑 {{member?.username}}的 角色</h4>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+    <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <ul class="list-group">
+        <li class="list-group-item" *ngFor="let role of selectedRoles; let i = index">
+            <div class="form-check">
+                <input id="library-{{i}}" type="checkbox" attr.aria-label="Library {{role.data}}" class="form-check-input" 
+                     [(ngModel)]="role.selected" name="library">
+                <label attr.for="library-{{i}}" class="form-check-label">{{role.data}}</label>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="reset()">重置</button>
+    <button type="button" class="btn btn-secondary" (click)="close()">取消</button>
+    <button type="button" class="btn btn-primary" (click)="save()">保存</button>
+</div>

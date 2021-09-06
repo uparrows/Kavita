@@ -1,0 +1,214 @@
+<div class="container">
+    <h2>用户面板</h2>
+    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+        <li *ngFor="let tab of tabs" [ngbNavItem]="tab">
+            <a ngbNavLink routerLink="." [fragment]="tab.fragment">{{ tab.title | titlecase }}</a>
+            <ng-template ngbNavContent>
+              <ng-container *ngIf="tab.fragment === ''">
+                <p>
+                    这些是绑定到您的帐户的全局设置. 
+                </p>
+                
+                <ngb-accordion [closeOthers]="true" activeIds="site-panel">
+                        <ngb-panel id="site-panel" title="Site">
+                            <ng-template ngbPanelContent>
+                                <form [formGroup]="settingsForm" *ngIf="user !== undefined">
+                                    <div class="form-group">
+                                        <label id="site-dark-mode-label" aria-describedby="site-heading">黑暗模式</label>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="site-dark-mode" formControlName="siteDarkMode" class="custom-control-input" [value]="true" aria-labelledby="site-dark-mode-label">
+                                                <label class="custom-control-label" for="site-dark-mode">开启</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="site-not-dark-mode" formControlName="siteDarkMode" class="custom-control-input" [value]="false" aria-labelledby="site-dark-mode-label">
+                                                <label class="custom-control-label" for="site-not-dark-mode">关闭</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="float-right mb-3">
+                                        <button type="button" class="btn btn-secondary mr-2" (click)="resetForm()" aria-describedby="site-dark-mode-label">重置</button>
+                                        <button type="submit" class="btn btn-primary" (click)="save()" aria-describedby="site-dark-mode-label" [disabled]="!settingsForm.touched && !settingsForm.dirty">保存</button>
+                                    </div>
+                                </form>
+                            </ng-template>
+                        </ngb-panel>
+                        <ngb-panel id="reading-panel" title="Reading">
+                            <ng-template ngbPanelContent>
+                                <form [formGroup]="settingsForm" *ngIf="user !== undefined">
+                                    <h3 id="manga-header">漫画</h3>
+                                    <div class="form-group">
+                                        <label for="settings-reading-direction">阅读方向</label>&nbsp;<i class="fa fa-info-circle" aria-hidden="true" placement="right" [ngbTooltip]="readingDirectionTooltip" role="button" tabindex="0"></i>
+                                        <ng-template #readingDirectionTooltip>单击方向以移至下一页。 从右到左意味着您单击屏幕左侧以移至下一页.</ng-template>
+                                        <span class="sr-only" id="settings-reading-direction-help">单击方向以移至下一页。 从右到左意味着您单击屏幕左侧以移至下一页.</span>
+                                        <select class="form-control" aria-describedby="manga-header" formControlName="readingDirection" id="settings-reading-direction">
+                                            <option *ngFor="let opt of readingDirections" [value]="opt.value">{{opt.text | titlecase}}</option>
+                                        </select>
+                                    </div>
+                            
+                                    <div class="form-group">
+                                        <label for="settings-scaling-option">缩放选项</label>&nbsp;<i class="fa fa-info-circle" aria-hidden="true" placement="right" [ngbTooltip]="taskBackupTooltip" role="button" tabindex="0"></i>
+                                        <ng-template #taskBackupTooltip>如何将图像缩放到屏幕.</ng-template>
+                                        <span class="sr-only" id="settings-scaling-option-help">如何将图像缩放到屏幕.</span>
+                                        <select class="form-control" aria-describedby="manga-header" formControlName="scalingOption" id="settings-scaling-option">
+                                            <option *ngFor="let opt of scalingOptions" [value]="opt.value">{{opt.text | titlecase}}</option>
+                                        </select>
+                                    </div>
+                            
+                                    <div class="form-group">
+                                        <label for="settings-pagesplit-option">分页</label>&nbsp;<i class="fa fa-info-circle" aria-hidden="true" placement="right" [ngbTooltip]="pageSplitOptionTooltip" role="button" tabindex="0"></i>
+                                        <ng-template #pageSplitOptionTooltip>如何分割全宽图像（即左右合并的图像）</ng-template>
+                                        <span class="sr-only" id="settings-pagesplit-option-help">如何分割全宽图像（即左右合并的图像）</span>
+                                        <select class="form-control" aria-describedby="manga-header" formControlName="pageSplitOption" id="settings-pagesplit-option">
+                                            <option *ngFor="let opt of pageSplitOptions" [value]="opt.value">{{opt.text | titlecase}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="settings-readingmode-option">阅读模式</label>
+                                        <select class="form-control" aria-describedby="manga-header" formControlName="readerMode" id="settings-readingmode-option">
+                                            <option *ngFor="let opt of readingModes" [value]="opt.value">{{opt.text | titlecase}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label id="auto-close-label">自动关闭菜单</label>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="auto-close" formControlName="autoCloseMenu" class="custom-control-input" [value]="true" aria-labelledby="auto-close-label">
+                                                <label class="custom-control-label" for="auto-close">开启</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="not-auto-close" formControlName="autoCloseMenu" class="custom-control-input" [value]="false" aria-labelledby="auto-close-label">
+                                                <label class="custom-control-label" for="not-auto-close">关闭</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <h3>书籍</h3>
+                                    <div class="form-group">
+                                        <label id="dark-mode-label">黑暗模式</label>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="dark-mode" formControlName="bookReaderDarkMode" class="custom-control-input" [value]="true" aria-labelledby="dark-mode-label">
+                                                <label class="custom-control-label" for="dark-mode">开启</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="not-dark-mode" formControlName="bookReaderDarkMode" class="custom-control-input" [value]="false" aria-labelledby="dark-mode-label">
+                                                <label class="custom-control-label" for="not-dark-mode">关闭</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="settings-book-reading-direction">图书阅读方向</label>&nbsp;<i class="fa fa-info-circle" aria-hidden="true" placement="right" [ngbTooltip]="bookReadingDirectionTooltip" role="button" tabindex="0"></i>
+                                        <ng-template #bookReadingDirectionTooltip>单击方向以移至下一页。 从右到左意味着您单击屏幕左侧以移至下一页.</ng-template>
+                                        <span class="sr-only" id="settings-reading-direction-help">单击方向以移至下一页。 从右到左意味着您单击屏幕左侧以移至下一页.</span>
+                                        <select class="form-control" aria-describedby="settings-reading-direction-help" formControlName="bookReaderReadingDirection">
+                                            <option *ngFor="let opt of readingDirections" [value]="opt.value">{{opt.text | titlecase}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label id="taptopaginate-label">点击翻页</label>&nbsp;<i class="fa fa-info-circle" aria-hidden="true" placement="right" [ngbTooltip]="tapToPaginateOptionTooltip" role="button" tabindex="0"></i>
+                                        <ng-template #tapToPaginateOptionTooltip>允许点击图书阅读器屏幕的两侧移动到上一页/下一页</ng-template>
+                                        <span class="sr-only" id="settings-taptopaginate-option-help">允许点击图书阅读器屏幕的两侧移动到上一页/下一页</span>
+                                        <div class="form-group">
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="taptopaginate" formControlName="bookReaderTapToPaginate" class="custom-control-input" [value]="true" aria-labelledby="taptopaginate-label">
+                                                <label class="custom-control-label" for="taptopaginate">开启</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" id="not-taptopaginate" formControlName="bookReaderTapToPaginate" class="custom-control-input" [value]="false" aria-labelledby="taptopaginate-label">
+                                                <label class="custom-control-label" for="not-taptopaginate">关闭</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="settings-fontfamily-option">字体系列</label>&nbsp;<i class="fa fa-info-circle" aria-hidden="true" placement="right" [ngbTooltip]="fontFamilyOptionTooltip" role="button" tabindex="0"></i>
+                                        <ng-template #fontFamilyOptionTooltip>要加载的字体系列。 默认将加载书的默认字体</ng-template>
+                                        <span class="sr-only" id="settings-fontfamily-option-help">要加载的字体系列。 默认将加载书的默认字体</span>
+                                        <select class="form-control" aria-describedby="settings-fontfamily-option-help" formControlName="bookReaderFontFamily">
+                                            <option *ngFor="let opt of fontFamilies" [value]="opt">{{opt | titlecase}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label id="font-size">字体大小</label>
+                                        <ngx-slider [options]="bookReaderFontSizeOptions" formControlName="bookReaderFontSize" aria-labelledby="font-size"></ngx-slider>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>行间距</label>&nbsp;<i class="fa fa-info-circle" aria-hidden="true" placement="right" [ngbTooltip]="bookLineHeightOptionTooltip" role="button" tabindex="0"></i>
+                                        <ng-template #bookLineHeightOptionTooltip>书的行间距是多少</ng-template>
+                                        <span class="sr-only" id="settings-booklineheight-option-help">书的行间距是多少</span>
+                                        <ngx-slider [options]="bookReaderLineSpacingOptions" formControlName="bookReaderLineSpacing" aria-describedby="settings-booklineheight-option-help"></ngx-slider>
+                                    </div>
+    
+                                    <div class="form-group">
+                                        <label>边距</label>&nbsp;<i class="fa fa-info-circle" aria-hidden="true" placement="right" [ngbTooltip]="bookReaderMarginOptionTooltip" role="button" tabindex="0"></i>
+                                        <ng-template #bookReaderMarginOptionTooltip>屏幕每一侧的间距是多少。 无论此设置如何，这都将在移动设备上覆盖为 0.</ng-template>
+                                        <span class="sr-only" id="settings-bookmargin-option-help">屏幕每一侧的间距是多少。 无论此设置如何，这都将在移动设备上覆盖为 0.</span>
+                                        <ngx-slider [options]="bookReaderMarginOptions" formControlName="bookReaderMargin" aria-describedby="bookmargin"></ngx-slider>
+                                    </div>
+    
+                                    <div class="float-right mb-3">
+                                        <button type="button" class="btn btn-secondary mr-2" (click)="resetForm()" aria-describedby="reading-panel">重置</button>
+                                        <button type="submit" class="btn btn-primary" (click)="save()" aria-describedby="reading-panel" [disabled]="!settingsForm.touched && !settingsForm.dirty">保存</button>
+                                    </div>
+                                </form>
+                            </ng-template>
+                        </ngb-panel>
+                    
+    
+                    <ngb-panel id="password-panel" title="Password">
+                        <ng-template ngbPanelContent>
+                            <p>更改密码</p>
+                            <div class="alert alert-danger" role="alert" *ngIf="resetPasswordErrors.length > 0">
+                                <div *ngFor="let error of resetPasswordErrors">{{error}}</div>
+                            </div>
+                            <form [formGroup]="passwordChangeForm">
+                                <div class="form-group">
+                                    <label for="new-password">新密码</label>
+                                    <input class="form-control" type="password" id="new-password" formControlName="password" required>
+                                    <div id="password-validations" class="invalid-feedback" *ngIf="passwordChangeForm.dirty || passwordChangeForm.touched">
+                                        <div *ngIf="password?.errors?.required">
+                                            此字段是必需填写的
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirm-password">确认密码</label>
+                                    <input class="form-control" type="password" id="confirm-password" formControlName="confirmPassword" aria-describedby="password-validations" required>
+                                    <div id="password-validations" class="invalid-feedback" *ngIf="passwordChangeForm.dirty || passwordChangeForm.touched">
+                                        <div *ngIf="!passwordsMatch">
+                                            密码必须一致
+                                        </div>
+                                        <div *ngIf="confirmPassword?.errors?.required">
+                                            此字段是必需填写的
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="float-right mb-3">
+                                    <button type="button" class="btn btn-secondary mr-2" aria-describedby="password-panel" (click)="resetPasswordForm()">重置</button>
+                                    <button type="submit" class="btn btn-primary" aria-describedby="password-panel" (click)="savePasswordForm()" [disabled]="!passwordChangeForm.valid || !(passwordChangeForm.dirty || passwordChangeForm.touched)">保存</button>
+                                </div>
+                            </form>
+                        </ng-template>
+                    </ngb-panel>
+                    <ngb-panel id="api-panel" title="OPDS">
+                        <ng-template ngbPanelContent>
+                            <p class="alert alert-danger" role="alert" *ngIf="!opdsEnabled">
+                                此服务器上未启用 OPDS！
+                            </p>
+                            <ng-container *ngIf="opdsEnabled">
+                                <app-api-key tooltipText="API 密钥就像一个密码。确保它私密和安全安全."></app-api-key>
+                                <app-api-key title="OPDS URL" [showRefresh]="false" [transform]="makeUrl"></app-api-key>
+                            </ng-container>
+                        </ng-template>
+                    </ngb-panel>
+                </ngb-accordion>
+              </ng-container>
+              <ng-container *ngIf="tab.fragment === 'bookmarks'">
+                <app-series-bookmarks></app-series-bookmarks>
+              </ng-container>
+            </ng-template>
+        </li>
+    </ul>
+
+    <div [ngbNavOutlet]="nav" class="mt-3"></div>
+</div>

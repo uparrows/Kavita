@@ -1,0 +1,74 @@
+<div class="container-fluid">
+
+    <div class="float-right">
+        <div class="d-inline-block" ngbDropdown #myDrop="ngbDropdown">
+            <button class="btn btn-outline-primary mr-2" id="dropdownManual" ngbDropdownAnchor (focus)="myDrop.open()">
+                <ng-container *ngIf="backupDBInProgress || clearCacheInProgress || isCheckingForUpdate || downloadLogsInProgress">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span class="sr-only">加载中...</span>
+                </ng-container>
+                操作
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdownManual">
+              <button ngbDropdownItem (click)="backupDB()" [disabled]="backupDBInProgress">
+                备份数据库
+              </button>
+              <button ngbDropdownItem (click)="clearCache()" [disabled]="clearCacheInProgress">
+                清除缓存
+              </button>
+              <button ngbDropdownItem (click)="downloadLogs()" [disabled]="downloadLogsInProgress">
+                下载日志
+              </button>
+              <button ngbDropdownItem (click)="checkForUpdates()">
+                检查更新
+              </button>
+            </div>
+          </div>
+    </div>
+
+    <h3>关于系统</h3>
+    <hr/>
+    <div class="form-group" *ngIf="serverInfo">
+        <dl>
+            <dt>版本</dt>
+            <dd>{{serverInfo.kavitaVersion}}</dd>
+
+            <dt>.NET 版本</dt>
+            <dd>{{serverInfo.dotNetVersion}}</dd>
+        </dl>
+    </div>
+
+    <h3>更多信息</h3>
+    <hr/>
+    <div>
+        <div class="row">
+            <div class="col-4">主页:</div> 
+            <div class="col"><a href="https://kavitareader.com" target="_blank">kavitareader.com</a></div>
+        </div>
+        <div class="row">
+            <div class="col-4">维基:</div> 
+            <div class="col"><a href="https://wiki.kavitareader.com" target="_blank">wiki.kavitareader.com</a></div>
+        </div>
+        <div class="row">
+            <div class="col-4">Discord:</div> 
+            <div class="col"><a href="https://discord.gg/b52wT37kt7" target="_blank">discord.gg/b52wT37kt7</a></div>
+        </div>
+        <div class="row">
+            <div class="col-4">捐赠:</div> 
+            <div class="col"><a href="https://opencollective.com/kavita" target="_blank">opencollective.com/kavita</a></div>
+        </div>
+        <div class="row">
+            <div class="col-4">源码:</div> 
+            <div class="col"><a href="https://github.com/Kareadita/Kavita" target="_blank">github.com/Kareadita/Kavita</a></div>
+        </div>
+		<div class="row">
+            <div class="col-4">汉化by昭君:</div> 
+            <div class="col"><a href="http://yuanfangblog.xyz" target="_blank">博客</a></div>
+        </div>
+
+        <div class="row">
+            <div class="col-4">功能请求:</div> 
+            <div class="col"><a href="https://feathub.com/Kareadita/Kavita" target="_blank">Feathub</a><br/>
+                <a href="https://github.com/Kareadita/Kavita/issues" target="_blank">Github issues</a></div>
+        </div>      
+</div>

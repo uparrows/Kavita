@@ -1,0 +1,15 @@
+
+<div class="fixed-top overlay" *ngIf="debug">
+    <strong>捕获滚动事件:</strong> {{!this.isScrolling && this.allImagesLoaded}}
+    <strong>正在滚动:</strong> {{isScrollingForwards() ? '向前' : '向后'}} {{this.isScrolling}}
+    <strong>已加载所有图像:</strong> {{this.allImagesLoaded}}
+    <strong>预加载</strong> {{minPageLoaded}}-{{maxPageLoaded}} 
+    <strong>当前页面:</strong>{{pageNum}}
+    <strong>宽度:</strong> {{webtoonImageWidth}}
+</div>
+
+
+<ng-container *ngFor="let item of webtoonImages | async; let index = index;">
+    <img src="{{item.src}}" style="display: block" class="mx-auto {{pageNum === item.page && debug ? 'active': ''}}" *ngIf="pageNum >= pageNum - bufferPages && pageNum <= pageNum + bufferPages" rel="nofollow" alt="image" (load)="onImageLoad($event)" id="page-{{item.page}}" [attr.page]="item.page" ondragstart="return false;" onselectstart="return false;">
+</ng-container>
+

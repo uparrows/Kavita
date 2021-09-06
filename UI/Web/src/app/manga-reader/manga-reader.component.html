@@ -1,0 +1,133 @@
+<div class="reader">
+    <div class="fixed-top overlay" *ngIf="menuOpen" [@slideFromTop]="menuOpen">
+        <div style="display: flex; margin-top: 5px;">
+            <button class="btn btn-icon" style="height: 100%" title="Back" (click)="closeReader()">
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                <span class="sr-only">返回</span>
+            </button>
+            
+            <div>
+                <div style="font-weight: bold;">{{title}}</div>
+                <div class="subtitle">
+                    {{subtitle}}
+                </div>
+            </div>
+            <div style="margin-left: auto; padding-right: 3%;">
+                <button class="btn btn-icon btn-small" role="checkbox" [attr.aria-checked]="pageBookmarked" title="{{pageBookmarked ? '取消书签页' : '书签页'}}" (click)="bookmarkPage()"><i class="{{pageBookmarked ? 'fa' : 'far'}} fa-bookmark" aria-hidden="true"></i><span class="sr-only">{{pageBookmarked ? '取消书签页' : '书签页'}}</span></button>
+            </div>
+        </div>
+    </div>
+    <ng-container *ngIf="isLoading">
+        <div class="spinner-border text-secondary loading" role="status">
+            <span class="invisible">加载...</span>
+        </div>
+    </ng-container>
+
+    <div (click)="toggleMenu()" class="reading-area">
+        <canvas #content class="{{getFittingOptionClass()}} {{this.colorMode}} {{readerMode === READER_MODE.MANGA_LR || readerMode === READER_MODE.MANGA_UD ? '' : 'd-none'}}" 
+                ondragstart="return false;" onselectstart="return false;">
+        </canvas>
+        <div class="webtoon-images" *ngIf="readerMode === READER_MODE.WEBTOON && !isLoading">
+            <app-infinite-scroller [pageNum]="pageNum" [bufferPages]="5" [goToPage]="goToPageEvent" (pageNumberChange)="handleWebtoonPageChange($event)" [totalPages]="maxPages" [urlProvider]="getPageUrl"></app-infinite-scroller>
+        </div>
+        <ng-container *ngIf="readerMode === READER_MODE.MANGA_LR || readerMode === READER_MODE.MANGA_UD"> <!--; else webtoonClickArea; See if people want this mode WEBTOON_WITH_CLICKS-->
+            <div class="{{readerMode === READER_MODE.MANGA_LR ? 'right' : 'top'}} {{clickOverlayClass('right')}}" (click)="handlePageChange($event, 'right')"></div>
+            <div class="{{readerMode === READER_MODE.MANGA_LR ? 'left' : 'bottom'}} {{clickOverlayClass('left')}}" (click)="handlePageChange($event, 'left')"></div>
+        </ng-container>
+        <ng-template #webtoonClickArea>
+            <div class="top {{clickOverlayClass('right')}}" (click)="handlePageChange($event, 'right')"></div>
+            <div class="right {{clickOverlayClass('right')}}" (click)="handlePageChange($event, 'right')"></div>
+            <div class="left {{clickOverlayClass('left')}}" (click)="handlePageChange($event, 'left')"></div>
+            <div class="bottom {{clickOverlayClass('left')}}" (click)="handlePageChange($event, 'left')"></div>
+        </ng-template>
+    </div>
+    
+    <div class="fixed-bottom overlay" *ngIf="menuOpen" [@slideFromBottom]="menuOpen">
+        <div class="form-group" *ngIf="pageOptions != undefined && pageOptions.ceil != undefined && pageOptions.ceil > 0">
+            <span class="sr-only" id="slider-info"></span>
+            <div class="row no-gutters">
+                <button class="btn btn-small btn-icon col-1" [disabled]="prevChapterDisabled" (click)="loadPrevChapter();resetMenuCloseTimer();" title="上一章/卷"><i class="fa fa-fast-backward" aria-hidden="true"></i></button>
+                <button class="btn btn-small btn-icon col-1" [disabled]="prevPageDisabled || pageNum === 0" (click)="goToPage(0);resetMenuCloseTimer();" title="第一页"><i class="fa fa-step-backward" aria-hidden="true"></i></button>
+                <div class="col custom-slider">
+                    <ngx-slider [options]="pageOptions" [value]="pageNum" aria-describedby="slider-info" [manualRefresh]="refreshSlider" (userChangeEnd)="sliderPageUpdate($event);startMenuCloseTimer()" (userChangeStart)="cancelMenuCloseTimer();"></ngx-slider>
+                </div>
+                <button class="btn btn-small btn-icon col-2" [disabled]="nextPageDisabled || pageNum >= maxPages - 1" (click)="goToPage(this.maxPages);resetMenuCloseTimer();" title="最后一页"><i class="fa fa-step-forward" aria-hidden="true"></i></button>
+                <button class="btn btn-small btn-icon col-1" [disabled]="nextChapterDisabled" (click)="loadNextChapter();resetMenuCloseTimer();" title="下一章/卷"><i class="fa fa-fast-forward" aria-hidden="true"></i></button>
+            </div>
+            
+            
+        </div>
+        <div class="row pt-4 ml-2 mr-2">
+            <div class="col">
+                <button class="btn btn-icon" (click)="setReadingDirection();resetMenuCloseTimer();" [disabled]="readerMode === READER_MODE.WEBTOON" aria-describedby="reading-direction" title="阅读方向: {{readingDirection === ReadingDirection.LeftToRight ? '从左到右' : '从右到左'}}">
+                    <i class="fa fa-angle-double-{{readingDirection === ReadingDirection.LeftToRight ? 'right' : 'left'}}" aria-hidden="true"></i>
+                    <span id="reading-direction" class="sr-only">{{readingDirection === ReadingDirection.LeftToRight ? '从左到右' : '从右到左'}}</span>
+                </button>
+            </div>
+            <div class="col">
+                <button class="btn btn-icon" title="阅读模式" (click)="toggleReaderMode();resetMenuCloseTimer();">
+                    <i class="fa {{readerModeIcon}}" aria-hidden="true"></i>
+                    <span class="sr-only">阅读模式</span>
+                </button>
+            </div>
+            <div class="col">
+                <button class="btn btn-icon {{this.colorMode}}" [disabled]="readerMode === READER_MODE.WEBTOON" title="Color Options: {{colorOptionName}}" (click)="toggleColorMode();resetMenuCloseTimer();">
+                    <i class="fa fa-palette" aria-hidden="true"></i>
+                    <span class="sr-only"></span>
+                </button>
+            </div>
+            <div class="col">
+                <button class="btn btn-icon" title="设置" (click)="settingsOpen = !settingsOpen;resetMenuCloseTimer();">
+                    <i class="fa fa-sliders-h" aria-hidden="true"></i>
+                    <span class="sr-only">设置</span>
+                </button>
+            </div>
+        </div>
+        <div class="bottom-menu" *ngIf="settingsOpen && generalSettingsForm">
+            <form [formGroup]="generalSettingsForm">
+                <div class="row">
+                    <div class="col-6">
+                        <label for="page-splitting">图像分割</label>&nbsp;
+                        <div class="split fa fa-image">
+                            <div class="{{splitIconClass}}"></div> 
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <select class="form-control" id="page-splitting" formControlName="pageSplitOption">
+                                <option [value]="1">从右到左</option>
+                                <option [value]="0">从左到右</option>
+                                <option [value]="2">无</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <label for="page-fitting">图像缩放</label>&nbsp;<i class="fa {{getFittingIcon()}}" aria-hidden="true"></i>
+                    </div>
+                    <div class="col-6">
+                        <select class="form-control" id="page-fitting" formControlName="fittingOption">
+                            <option value="full-height">适应高度</option>
+                            <option value="full-width">适应宽度</option>
+                            <option value="original">原始</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mt-2 mb-2">
+                    <div class="col-6">
+                        <label for="autoCloseMenu" class="form-check-label">自动关闭菜单</label>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-check">
+                            <input id="autoCloseMenu" type="checkbox" aria-label="管理员" class="form-check-input" formControlName="autoCloseMenu">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+</div>

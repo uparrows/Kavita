@@ -1,0 +1,50 @@
+
+
+<div class="container-fluid">
+    <div class="row mb-2">
+        <div class="col-8"><h3>用户</h3></div>
+        <div class="col-4"><button class="btn btn-primary float-right" (click)="createMember()"><i class="fa fa-plus" aria-hidden="true"></i><span class="phone-hidden">&nbsp;添加用户</span></button></div>
+    </div>
+    <ul class="list-group" *ngIf="!createMemberToggle; else createUser">
+        <li *ngFor="let member of members; let idx = index;" class="list-group-item">
+            <div>
+                <h4>
+                    <i class="presence fa fa-circle" title="登录" aria-hidden="true" *ngIf="false && (presence.onlineUsers$ | async)?.includes(member.username)"></i><span id="member-name--{{idx}}">{{member.username | titlecase}} </span><span *ngIf="member.isAdmin" class="badge badge-pill badge-secondary">管理员</span>
+                    <div class="float-right" *ngIf="canEditMember(member)">
+                        <button class="btn btn-danger mr-2" (click)="deleteUser(member)" placement="top" ngbTooltip="删除用户" attr.aria-label="删除用户 {{member.username | titlecase}}"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                        <button class="btn btn-secondary mr-2" (click)="updatePassword(member)" placement="top" ngbTooltip="修改密码" attr.aria-label="修改 {{member.username | titlecase}} 的密码"><i class="fa fa-key" aria-hidden="true"></i></button>
+                        <button class="btn btn-primary" (click)="openEditLibraryAccess(member)" placement="top" ngbTooltip="编辑" attr.aria-label="编辑 {{member.username | titlecase}}"><i class="fa fa-pen" aria-hidden="true"></i></button>
+                    </div>
+                </h4>
+                <div>最后登录: 
+                    <span *ngIf="member.lastActive == '0001-01-01T00:00:00'; else activeDate">从未</span>
+                    <ng-template #activeDate>
+                        {{member.lastActive | date: 'MM/dd/yyyy'}}
+                    </ng-template>
+                </div>
+                <div *ngIf="!member.isAdmin">分享: {{formatLibraries(member)}}</div>
+                <div>
+                    角色: <span *ngIf="getRoles(member).length === 0; else showRoles">无</span>
+                    <ng-template #showRoles>
+                        <app-tag-badge *ngFor="let role of getRoles(member)">{{role}}</app-tag-badge>
+                    </ng-template>
+                    <button class="btn btn-icon" attr.aria-labelledby="member-name--{{idx}}" title="{{hasAdminRole(member) ? '管理员拥有所有功能权限' : '编辑角色'}}" (click)="openEditRole(member)" [disabled]="hasAdminRole(member)">
+                        <i class="fa fa-pen" aria-hidden="true"></i>
+                        <span class="sr-only">编辑角色</span>
+                    </button>
+                </div>
+            </div>
+        </li>
+        <li *ngIf="loadingMembers" class="list-group-item">
+            <div class="spinner-border text-secondary" role="status">
+                <span class="invisible">加载...</span>
+            </div>
+        </li>
+        <li class="list-group-item" *ngIf="members.length === 0 && !loadingMembers">
+            没有其他用户.
+        </li>
+    </ul>
+    <ng-template #createUser>
+        <app-register-member (created)="onMemberCreated($event)"></app-register-member>
+    </ng-template>
+</div>

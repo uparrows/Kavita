@@ -1,0 +1,251 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <AnalysisMode>Default</AnalysisMode>
+    <TargetFramework>net5.0</TargetFramework>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>false</DebugSymbols>
+    <ApplicationIcon>../favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DocumentationFile>bin\Debug\API.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <!-- Set the Product and Version info for our own projects -->
+  <PropertyGroup>
+    <Product>Kavita</Product>
+    <Company>kareadita.github.io</Company>
+    <Copyright>Copyright 2020-$([System.DateTime]::Now.ToString('yyyy')) kavitareader.com (GNU General Public v3)</Copyright>
+
+    <AssemblyConfiguration>$(Configuration)-dev</AssemblyConfiguration>
+
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+
+    <Deterministic Condition="$(AssemblyVersion.EndsWith('*'))">False</Deterministic>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Docnet.Core" Version="2.3.1" />
+    <PackageReference Include="ExCSS" Version="4.1.0" />
+    <PackageReference Include="Flurl" Version="3.0.2" />
+    <PackageReference Include="Flurl.Http" Version="3.2.0" />
+    <PackageReference Include="Hangfire" Version="1.7.24" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.24" />
+    <PackageReference Include="Hangfire.MaximumConcurrentExecutions" Version="1.1.0" />
+    <PackageReference Include="Hangfire.MemoryStorage.Core" Version="1.4.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.35" />
+    <PackageReference Include="MarkdownDeep.NET.Core" Version="1.5.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.1.3" />
+    <PackageReference Include="NetVips" Version="2.0.1" />
+    <PackageReference Include="NetVips.Native" Version="8.11.0" />
+    <PackageReference Include="NReco.Logging.File" Version="1.1.2" />
+    <PackageReference Include="Sentry.AspNetCore" Version="3.8.3" />
+    <PackageReference Include="SharpCompress" Version="0.28.3" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.27.0.35380">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.12.0" />
+    <PackageReference Include="VersOne.Epub" Version="3.0.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kavita.Common\Kavita.Common.csproj" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <None Remove="Hangfire-log.db" />
+    <None Remove="obj\**" />
+    <None Remove="wwwroot\**" />
+    <None Remove="cache\**" />
+    <None Remove="backups\**" />
+    <None Remove="logs\**" />
+    <None Remove="temp\**" />
+    <None Remove="kavita.log" />
+    <None Remove="kavita.db" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Interfaces\IMetadataService.cs" />
+    <Compile Remove="obj\**" />
+    <Compile Remove="wwwroot\**" />
+    <Compile Remove="cache\**" />
+    <Compile Remove="backups\**" />
+    <Compile Remove="logs\**" />
+    <Compile Remove="temp\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="obj\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
+    <EmbeddedResource Remove="cache\**" />
+    <EmbeddedResource Remove="backups\**" />
+    <EmbeddedResource Remove="logs\**" />
+    <EmbeddedResource Remove="temp\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="obj\**" />
+    <Content Remove="wwwroot\**" />
+    <Content Remove="cache\**" />
+    <Content Remove="backups\**" />
+    <Content Remove="logs\**" />
+    <Content Remove="temp\**" />
+    <Content Remove="stats\**" />
+    <Content Condition=" '$(Configuration)' == 'Release' " Remove="appsettings.Development.json" />
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="logs\kavita.json" />
+    <_ContentIncludedByDefault Remove="wwwroot\3rdpartylicenses.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\6.d9925ea83359bb4c7278.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\6.d9925ea83359bb4c7278.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\7.860cdd6fd9d758e6c210.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\7.860cdd6fd9d758e6c210.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\8.028f6737a2f0621d40c7.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\8.028f6737a2f0621d40c7.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\EBGarmond\EBGaramond-Italic-VariableFont_wght.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\EBGarmond\EBGaramond-VariableFont_wght.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\EBGarmond\OFL.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-Black.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-BlackItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-Bold.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-BoldItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-ExtraBold.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-ExtraBoldItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-ExtraLight.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-ExtraLightItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-Italic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-Light.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-LightItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-Medium.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-MediumItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-Regular.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-SemiBold.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-SemiBoldItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-Thin.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\FiraSans-ThinItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Fira_Sans\OFL.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Lato\Lato-Black.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Lato\Lato-BlackItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Lato\Lato-Bold.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Lato\Lato-BoldItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Lato\Lato-Italic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Lato\Lato-Light.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Lato\Lato-LightItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Lato\Lato-Regular.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Lato\Lato-Thin.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Lato\Lato-ThinItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Lato\OFL.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Libre_Baskerville\LibreBaskerville-Bold.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Libre_Baskerville\LibreBaskerville-Italic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Libre_Baskerville\LibreBaskerville-Regular.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Libre_Baskerville\OFL.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Libre_Caslon\LibreCaslonText-Bold.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Libre_Caslon\LibreCaslonText-Italic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Libre_Caslon\LibreCaslonText-Regular.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Libre_Caslon\OFL.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Merriweather\Merriweather-Black.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Merriweather\Merriweather-BlackItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Merriweather\Merriweather-Bold.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Merriweather\Merriweather-BoldItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Merriweather\Merriweather-Italic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Merriweather\Merriweather-Light.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Merriweather\Merriweather-LightItalic.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Merriweather\Merriweather-Regular.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Merriweather\OFL.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Nanum_Gothic\NanumGothic-Bold.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Nanum_Gothic\NanumGothic-ExtraBold.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Nanum_Gothic\NanumGothic-Regular.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Nanum_Gothic\OFL.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Oswald\OFL.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Oswald\Oswald-VariableFont_wght.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Oswald\README.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Oswald\static\Oswald-Bold.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Oswald\static\Oswald-ExtraLight.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Oswald\static\Oswald-Light.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Oswald\static\Oswald-Medium.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Oswald\static\Oswald-Regular.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\Oswald\static\Oswald-SemiBold.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\RocknRoll_One\OFL.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\fonts\RocknRoll_One\RocknRollOne-Regular.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\images\error-placeholder-min.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\images\error-placeholder.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\images\error-placeholder2-min.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\images\error-placeholder2.dark-min.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\images\error-placeholder2.dark.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\images\error-placeholder2.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\images\image-placeholder-min.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\images\image-placeholder.dark-min.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\images\image-placeholder.dark.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\images\image-placeholder.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\images\preset-light.png" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\themes\dark.scss" />
+    <_ContentIncludedByDefault Remove="wwwroot\common.ad975892146299f80adb.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\common.ad975892146299f80adb.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\EBGaramond-VariableFont_wght.2a1da2dbe7a28d63f8cb.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-brands-400.0fea24969112a781acd2.eot" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-brands-400.c967a94cfbe2b06627ff.woff2" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-brands-400.dc2cbadd690e1d4b2c9c.woff" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-brands-400.e33e2cf6e02cac2ccb77.svg" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-brands-400.ec82f282c7f54b637098.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-regular-400.06b9d19ced8d17f3d5cb.svg" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-regular-400.08f9891a6f44d9546678.eot" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-regular-400.1008b5226941c24f4468.woff2" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-regular-400.1069ea55beaa01060302.woff" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-regular-400.1495f578452eb676f730.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-solid-900.10ecefc282f2761808bf.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-solid-900.371dbce0dd46bd4d2033.svg" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-solid-900.3a24a60e7f9c6574864a.eot" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-solid-900.3ceb50e7bcafb577367c.woff2" />
+    <_ContentIncludedByDefault Remove="wwwroot\fa-solid-900.46fdbd2d897f8824e63c.woff" />
+    <_ContentIncludedByDefault Remove="wwwroot\favicon.ico" />
+    <_ContentIncludedByDefault Remove="wwwroot\FiraSans-Regular.1c0bf0728b51cb9f2ddc.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\index.html" />
+    <_ContentIncludedByDefault Remove="wwwroot\Lato-Regular.9919edff6283018571ad.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\LibreBaskerville-Regular.a27f99ca45522bb3d56d.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\main.44f5c0973044295d8be0.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\main.44f5c0973044295d8be0.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\Merriweather-Regular.55c73e48e04ec926ebfe.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\NanumGothic-Regular.6c84540de7730f833d6c.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\polyfills.348e08e9d0e910a15938.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\polyfills.348e08e9d0e910a15938.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\RocknRollOne-Regular.c75da4712d1e65ed1f69.ttf" />
+    <_ContentIncludedByDefault Remove="wwwroot\runtime.ea545c6916f85411478f.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\runtime.ea545c6916f85411478f.js.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\styles.4bd902bb3037f36f2c64.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\styles.4bd902bb3037f36f2c64.css.map" />
+    <_ContentIncludedByDefault Remove="wwwroot\vendor.6b2a0912ae80e6fd297f.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\vendor.6b2a0912ae80e6fd297f.js.map" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Drawing.Common" />
+  </ItemGroup>
+
+</Project>

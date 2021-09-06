@@ -1,0 +1,74 @@
+<div *ngIf="data !== undefined">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">
+            {{parentName}} - {{data.number != 0 ? (isChapter ? '章 ' : '卷 ') + data.number : '特刊'}} 详情</h4>
+        <button type="button" class="close" aria-label="关闭" (click)="close()">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body scrollable-modal">
+        <h4 *ngIf="utilityService.isVolume(data)">信息</h4>
+
+        <ng-container *ngIf="utilityService.isVolume(data) || utilityService.isChapter(data)">
+            <div class="row no-gutters">
+                <div class="col">
+                    Id: {{data.id}}
+                </div>
+                <div class="col">
+                </div>
+            </div>
+            <div class="row no-gutters">
+                <div class="col" *ngIf="utilityService.isVolume(data)">
+                    添加: {{(data.created | date: 'MM/dd/yyyy') || '-'}}
+                </div>
+                <div class="col">
+                    页数: {{data.pages}}
+                </div>
+            </div>
+        </ng-container>
+
+        <h4 *ngIf="!utilityService.isChapter(data)">章节</h4>
+        <ul class="list-unstyled">
+            <li class="media my-4" *ngFor="let chapter of chapters">
+                <a (click)="readChapter(chapter)" href="javascript:void(0);" title="阅读章节 {{chapter.number}}">
+                    <img class="mr-3" style="width: 74px" [src]="chapter.coverImage">
+                </a>
+                <div class="media-body">
+                    <h5 class="mt-0 mb-1">
+                        <span *ngIf="chapter.number !== '0'; else specialHeader">
+                            <span class="">
+                                <app-card-actionables (actionHandler)="performAction($event, chapter)" [actions]="chapterActions" [labelBy]="'章节' + formatChapterNumber(chapter)"></app-card-actionables>
+                            </span>&nbsp;章节 {{formatChapterNumber(chapter)}}
+                            <span class="badge badge-primary badge-pill">
+                                <span *ngIf="chapter.pagesRead > 0 && chapter.pagesRead < chapter.pages">{{chapter.pagesRead}} / {{chapter.pages}}</span>
+                                <span *ngIf="chapter.pagesRead === 0">未读</span>
+                                <span *ngIf="chapter.pagesRead === chapter.pages">已读</span>
+                            </span>
+                        </span>
+                        <ng-template #specialHeader>文件</ng-template>
+                    </h5>
+                    <ul class="list-group">
+                        <li *ngFor="let file of chapter.files" class="list-group-item">
+                            <span>{{file.filePath}}</span>
+                            <div class="row no-gutters">
+                                <div class="col">
+                                    页数: {{file.pages}}
+                                </div>
+                                <div class="col">
+                                    格式: <span class="badge badge-secondary">{{utilityService.mangaFormatToText(file.format)}}</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+        
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-info" [disabled]="!isAdmin" (click)="updateCover()">更新封面</button>
+        <button type="submit" class="btn btn-primary" (click)="close()">关闭</button>
+    </div>
+</div>
+
+

@@ -1,0 +1,69 @@
+<div class="container-fluid">
+    <form [formGroup]="settingsForm" *ngIf="serverSettings !== undefined">
+        <p class="text-warning pt-2">端口和日志级别需要手动重启 Kavita 才能生效。</p>
+        <div class="form-group">
+            <label for="settings-cachedir">缓存目录</label>&nbsp;<i class="fa fa-info-circle" placement="right" [ngbTooltip]="cacheDirectoryTooltip" role="button" tabindex="0"></i>
+            <ng-template #cacheDirectoryTooltip>服务器在读取时放置临时文件的位置。 并将定期清理.</ng-template>
+            <span class="sr-only" id="settings-cachedir-help">服务器在读取时放置临时文件的位置。 并将定期清理.</span>
+            <input readonly id="settings-cachedir" aria-describedby="settings-cachedir-help" class="form-control" formControlName="cacheDirectory" type="text">
+        </div>
+
+        <div class="form-group">
+            <label for="settings-port">端口</label>&nbsp;<i class="fa fa-info-circle" placement="right" [ngbTooltip]="portTooltip" role="button" tabindex="0"></i>
+            <ng-template #portTooltip>服务器监听的端口。 如果您在 Docker 上运行，这是固定的。 需要重启才能生效.</ng-template>
+            <span class="sr-only" id="settings-port-help">服务器监听的端口。 如果您在 Docker 上运行，这是固定的。 需要重启才能生效.</span>
+            <input id="settings-port" aria-describedby="settings-port-help" class="form-control" formControlName="port" type="number" step="1" min="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+        </div>
+
+        <div class="form-group">
+            <label for="logging-level-port">日志级别</label>&nbsp;<i class="fa fa-info-circle" placement="right" [ngbTooltip]="loggingLevelTooltip" role="button" tabindex="0"></i>
+            <ng-template #loggingLevelTooltip>使用调试来帮助识别问题。 调试会占用大量磁盘空间。 需要重启才能生效.</ng-template>
+            <span class="sr-only" id="logging-level-port-help">服务器监听的端口。 需要重启才能生效.</span>
+            <select id="logging-level-port" aria-describedby="logging-level-port-help" class="form-control" aria-describedby="settings-tasks-scan-help" formControlName="loggingLevel">
+                <option *ngFor="let level of logLevels" [value]="level">{{level | titlecase}}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="stat-collection" aria-describedby="collection-info">允许匿名使用收藏</label>
+            <p class="accent" id="collection-info">向 Kavita 的服务器发送匿名使用情况和错误信息。 这包括有关浏览器的信息、错误报告以及操作系统和运行时版本。 我们将使用此信息来确定功能、错误修复和性能调整的优先级。 需要重启才能生效.</p>
+            <div class="form-check">
+                <input id="stat-collection" type="checkbox" aria-label="Stat Collection" class="form-check-input" formControlName="allowStatCollection">
+                <label for="stat-collection" class="form-check-label">发送数据</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="opds" aria-describedby="opds-info">OPDS</label>
+            <p class="accent" id="opds-info">OPDS 支持将允许所有用户使用 OPDS 从服务器读取和下载内容。 如果启用了 OPDS，用户在使用它时将不需要下载权限来下载媒体.</p>
+            <div class="form-check">
+                <input id="opds" type="checkbox" aria-label="OPDS Support" class="form-check-input" formControlName="enableOpds">
+                <label for="opds" class="form-check-label">启用 OPDS</label>
+            </div>
+        </div>
+
+        <h4>重复任务</h4>
+        <div class="form-group">
+            <label for="settings-tasks-scan">扫描书库</label>&nbsp;<i class="fa fa-info-circle" placement="right" [ngbTooltip]="taskScanTooltip" role="button" tabindex="0"></i>
+            <ng-template #taskScanTooltip>Kavita 扫描和刷新漫画文件元数据的频率.</ng-template>
+            <span class="sr-only" id="settings-tasks-scan-help">Kavita 扫描和刷新漫画文件元数据的频率.</span>
+            <select class="form-control" aria-describedby="settings-tasks-scan-help" formControlName="taskScan" id="settings-tasks-scan">
+                <option *ngFor="let freq of taskFrequencies" [value]="freq">{{freq | titlecase}}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="settings-tasks-backup">备份书库数据</label>&nbsp;<i class="fa fa-info-circle" placement="right" [ngbTooltip]="taskBackupTooltip" role="button" tabindex="0"></i>
+            <ng-template #taskBackupTooltip>Kavita 多久备份一次数据库.</ng-template>
+            <span class="sr-only" id="settings-tasks-backup-help">Kavita 多久备份一次数据库.</span>
+            <select class="form-control" aria-describedby="settings-tasks-backup-help" formControlName="taskBackup" id="settings-tasks-backup">
+                <option *ngFor="let freq of taskFrequencies" [value]="freq">{{freq | titlecase}}</option>
+            </select>
+        </div>
+    
+        <div class="float-right">
+            <button type="button" class="btn btn-secondary mr-2" (click)="resetForm()">重置</button>
+            <button type="submit" class="btn btn-primary" (click)="saveSettings()" [disabled]="!settingsForm.touched && !settingsForm.dirty">保存</button>
+        </div>
+    </form>
+</div>

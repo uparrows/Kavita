@@ -1,0 +1,11 @@
+<div class="container">
+    <ng-container *ngIf="firstTimeFlow">
+        <p>请为自己创建一个管理员帐户以开始您的阅读之旅。</p>
+        <app-register-member (created)="onAdminCreated($event)" [firstTimeFlow]="firstTimeFlow"></app-register-member>
+    </ng-container>
+</div>
+
+
+
+
+

@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+    kavita:
+        image: kizaing/kavita:latest
+        volumes:
+            - ./manga:/manga
+            - ./data:/kavita/data
+        ports:
+            - "5000:5000"
+        restart: unless-stopped

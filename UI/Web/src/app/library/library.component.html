@@ -1,0 +1,33 @@
+
+<div class="container-fluid">
+    <div *ngIf="libraries.length === 0 && !isLoading && isAdmin" class="d-flex justify-content-center">
+        <p>还没有设置库，在 <a href="/admin/dashboard#libraries">服务器设置里配置</a>.</p>
+    </div>
+    <div *ngIf="libraries.length === 0 && !isLoading && !isAdmin" class="d-flex justify-content-center">
+        <p>您尚未被授予访问任何库的权限。</p>
+    </div>
+    <app-carousel-reel [items]="libraries" title="Libraries">
+        <ng-template #carouselItem let-item let-position="idx">
+            <app-library-card [data]="item"></app-library-card>
+        </ng-template>
+    </app-carousel-reel>
+
+    <app-carousel-reel [items]="inProgress" title="进行中" (sectionClick)="handleSectionClick($event)">
+        <ng-template #carouselItem let-item let-position="idx">
+            <app-series-card [data]="item" [libraryId]="item.libraryId" (reload)="reloadInProgress($event)" (dataChanged)="reloadInProgress($event)"></app-series-card>
+        </ng-template>
+    </app-carousel-reel>
+
+    <app-carousel-reel [items]="recentlyAdded" title="最近添加" (sectionClick)="handleSectionClick($event)">
+        <ng-template #carouselItem let-item let-position="idx">
+            <app-series-card [data]="item" [libraryId]="item.libraryId" (reload)="reloadTags()" (dataChanged)="loadRecentlyAdded()"></app-series-card>
+        </ng-template>
+    </app-carousel-reel>
+
+    <app-carousel-reel [items]="collectionTags" title="收藏" (sectionClick)="handleSectionClick($event)">
+        <ng-template #carouselItem let-item let-position="idx">
+            <app-card-item [title]="item.title" [entity]="item" [actions]="collectionTagActions" [imageUrl]="item.coverImage" (clicked)="loadCollection(item)"></app-card-item>
+        </ng-template>
+    </app-carousel-reel>
+    
+</div>

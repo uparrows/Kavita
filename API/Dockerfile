@@ -14,7 +14,7 @@ COPY build_target.sh /build_target.sh
 RUN /build_target.sh
 
 #Production image
-FROM ubuntu:focal
+FROM ubuntu:latest
 
 #Move the output files to where they need to be
 COPY --from=builder /Projects/Kavita/_output/build/Kavita /kavita

@@ -118,7 +118,7 @@ jobs:
         uses: SiqiLu/dotnet-bump-version@master
         with:
           version_files: Kavita.Common/Kavita.Common.csproj
-          github_token: ${{ secrets.REPO_GHA_PAT }}
+          github_token: ${{ secrets.HUB_TOKEN }}
 
   develop:
     name: Build Nightly Docker if Develop push
@@ -184,7 +184,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Sentry Map Release
-          token: ${{ secrets.REPO_GHA_PAT }}
+          token: ${{ secrets.HUB_TOKEN }}
           inputs: '{ "version": "${{steps.get-version.outputs.assembly-version}}" }'
 
       - name: Login to Docker Hub
